@@ -167,11 +167,21 @@
         };
 
 
+        WebSocketRPC.prototype.once = function(event, listener) {
+            listener.once = true
+            this.on(event, listener)
+        };
+
+
         // removeListener: remove a listener
 
         WebSocketRPC.prototype.removeListener = function(event, listener) {
             if(event in this.listeners === false) return;
-            this.listeners[event].splice(this.listeners[event].indexOf(fct), 1);
+
+            if(listener)
+                this.listeners[event].splice(this.listeners[event].indexOf(listener), 1);
+            else
+                this.listeners[event] = []
         };
 
 
@@ -179,8 +189,12 @@
 
         WebSocketRPC.prototype.emit = function(event) {
             if(event in this.listeners === false) return;
-            for(var i = 0, l = this.listeners[event], ln = l.length; i < ln; i++)
+            for(var i = 0, l = this.listeners[event], ln = l.length; i < ln; i++) {
                 l[i].apply(this, Array.prototype.slice.call(arguments, 1));
+                if(l[i].once) 
+                    this.removeListener(event, l[i])
+            }
+
         };
 
 
