@@ -91,11 +91,11 @@
             });
 
             // TEMPORARY FIX for https://github.com/einaros/ws/issues/31
-
-            this.on('error', function(e) {
-                if(typeof(module) !== 'undefined' && e.message && e.message.indexOf('ECONNREFUSED') != -1)
-                    this.emit('close');
-            });
+            // THIS LEAKS MEMORY LIKE CRAZY
+            //this.on('error', function(e) {
+            //    if(typeof(module) !== 'undefined' && e.message && e.message.indexOf('ECONNREFUSED') != -1)
+            //        this.emit('close');
+            //});
 
             this.connect();
         };
